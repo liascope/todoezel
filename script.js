@@ -15,28 +15,18 @@ const shopList = document.getElementById("shopItems");
 const shopItem = document.getElementById("shopping-input");
 const generalTodo = document.getElementById("general-input");
 const dateTasks = document.querySelectorAll("#date-tasks li");
+// Format Date for Task Class
+let date = new Date();
+const year = date.getFullYear();
+const month = String(date.getMonth() + 1).padStart(2, "0");
+const day = String(date.getDate()).padStart(2, "0");
+const actDate = `${year}-${month}-${day}`;
 
 let generalTasks = [];
 let shopItems = [];
 let savedTasks = [];
 let tasks = [];
-
-class Task {
-  constructor(text, date) {
-    this.text = text;
-    this.date = date;
-  }
-}
-
-// Save Tasks for Date as Class in tasks-Array
-const addTask = (text, date) => {
-  const newTask = new Task(text, date);
-  tasks.push(newTask);
-  savedList.innerHTML = "";
-  taskList.innerHTML = "";
-  saveAppState();
-};
-
+/////////////////////////////////////////// General Funktions //////////////
 // Display Date for Today Above
 const formatDate = () => {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
@@ -61,16 +51,7 @@ const formatDate = () => {
   const year = today.getFullYear().toString().slice(-2);
   return `TODAY | ${dayOfWeek} ${day} ${month} ${year}`;
 };
-
 todayDate.innerHTML = formatDate();
-
-// Format Date for Task Class
-let date = new Date();
-const year = date.getFullYear();
-const month = String(date.getMonth() + 1).padStart(2, "0");
-const day = String(date.getDate()).padStart(2, "0");
-const actDate = `${year}-${month}-${day}`;
-// console.log(actDate);
 
 // Toggle Today Section
 const toggleTodayDiv = () => {
@@ -82,9 +63,172 @@ const toggleTodayDiv = () => {
       : main.classList.remove("hidden");
   }
 };
-// toggleTodayDiv();
+// Navigation
+const toggleSection = (button) => {
+  // Hide all sections
+  const sections = document.querySelectorAll("section");
+  sections.forEach((section) => (section.style.display = "none"));
+  // Render section that belongs to data-target of btn
+  const targetSectionId = button.dataset.target;
+  const sectionToShow = document.getElementById(targetSectionId);
+  sectionToShow.style.display = "block";
+  todayBody.classList.add("hidden");
+  main.classList.remove("hidden");
+};
+// progress border style
+const interpolateColor = (color1, color2, factor) => {
+  const r = Math.round(color1[0] + factor * (color2[0] - color1[0]));
+  const g = Math.round(color1[1] + factor * (color2[1] - color1[1]));
+  const b = Math.round(color1[2] + factor * (color2[2] - color1[2]));
+  return `${r}, ${g}, ${b}`;
+};
+const calculateProgress = (section) => {
+  const tasksCalc = document.querySelectorAll(`
+    #${section} li input[type="checkbox"]`);
+  let todaysTasks;
+  // progress for general and today
+  if (section === "general-tasks" || section === "today-tasks") {
+    const sectionProgress = document.getElementById(
+      `${section === "general-tasks" ? "general-progress" : "today-progress"}`
+    );
+    const total = tasksCalc.length;
+    const completed = Array.from(tasksCalc).filter(
+      (task) => task.checked
+    ).length;
+    const percent = total ? Math.round((completed / total) * 100) : 0;
+    sectionProgress.innerText = `${percent}%`;
+    total === 0
+      ? (sectionProgress.style.opacity = 0.4)
+      : (sectionProgress.style.opacity = 1);
+    // progress border style
+    const colors = [
+      [255, 158, 74],
+      [255, 107, 107],
+      [199, 77, 206],
+      [87, 193, 232],
+      [110, 210, 122],
+    ];
+    sectionProgress.style.borderColor =
+      percent <= 0
+        ? `rgb(${colors[0].join(",")})`
+        : percent < 25
+        ? `rgb(${interpolateColor(colors[0], colors[1], percent / 25)})`
+        : percent < 50
+        ? `rgb(${interpolateColor(colors[1], colors[2], (percent - 25) / 25)})`
+        : percent < 75
+        ? `rgb(${interpolateColor(colors[2], colors[3], (percent - 50) / 25)})`
+        : percent < 100
+        ? `rgb(${interpolateColor(colors[3], colors[4], (percent - 75) / 25)})`
+        : `rgb(${colors[4].join(",")})`;
+    saveAppState();
+  }
+  // checked-status
+  tasksCalc.forEach((checkbox, index) => {
+    const checkedYes = checkbox.checked;
+    if (section === "general-tasks" && generalTasks[index]) {
+      generalTasks[index].isChecked = checkedYes;
+    }
+    if (section === "shopItems" && shopItems[index]) {
+      shopItems[index].isChecked = checkedYes;
+    }
+    if (section === "today-tasks") {
+      const taskText = checkbox.previousElementSibling.textContent;
+      todaysTasks = taskText;
+      tasks.forEach((taskSection) => {
+        if (taskSection.date === actDate)
+          taskSection.text.forEach((t) => {
+            if (t.name === todaysTasks) t.isChecked = checkedYes;
+          });
+      });
+    }
+    saveAppState();
+  });
+};
 
-/////////////////////////////////////////////////////////////////////////
+const liToggle = (li, btn) => {
+  li.addEventListener("click", (e) => {
+    const check = li.querySelector('input[type="checkbox"]');
+    if (
+      e.target.tagName.toLowerCase() === "input" ||
+      e.target.classList.contains("delete-button")
+    ) {
+      return;
+    }
+
+    if (btn.style.display === "none") {
+      btn.style.display = "block";
+      check.style.display = "none";
+    } else {
+      btn.style.display = "none";
+      check.style.display = "block";
+    }
+  });
+};
+
+const deleteTask = (
+  e,
+  list,
+  calculateProgressFunction,
+  previewElement = null,
+  emptyMessage = "No tasks left, you did 100% today!"
+) => {
+  e.stopPropagation();
+  const li = e.target.closest("li");
+  // find value to be deleted
+  const deleteTaskText = li.textContent.slice(0, -1);
+  li.remove();
+
+  // find index of the value to be deleted
+  const taskIndex = list.findIndex((task) => task.name === deleteTaskText);
+
+  // delete task from array/list
+  if (taskIndex !== -1) {
+    list.splice(taskIndex, 1);
+  }
+
+  // render previewMessage of today-div
+  if (list.length === 0 && previewElement) {
+    previewElement.textContent = emptyMessage;
+    todayBody.style.display = "none";
+    main.classList.remove("hidden");
+    tasks.forEach((todaysTasks, i) => {
+      if (todaysTasks.date === actDate) tasks.splice(i, 1);
+    });
+  } else if (previewElement) {
+    previewElement.textContent = list[0].name;
+  }
+  if (calculateProgressFunction) {
+    calculateProgressFunction();
+  }
+  saveAppState();
+};
+
+const renderMessage = (messageBox, array) => {
+  array.length === 0
+    ? messageBox.classList.remove("hidden")
+    : messageBox.classList.add("hidden");
+};
+///////////////////////////////////////////////// General App Funktions End //////////////////////
+
+////////////////////////////////Funktions for Tasks Sections //////////////////
+// Class for Todays Tasks
+class Task {
+  constructor(text, date) {
+    this.text = text;
+    this.date = date;
+  }
+}
+
+// create Task Class for Todays Tasks
+const addTask = (text, date) => {
+  const newTask = new Task(text, date);
+  tasks.push(newTask);
+  savedList.innerHTML = "";
+  taskList.innerHTML = "";
+  saveAppState();
+};
+
+//
 const renderList = function (toDo, section, actualTask, deleteFunc) {
   let input;
   if (toDo) {
@@ -94,8 +238,6 @@ const renderList = function (toDo, section, actualTask, deleteFunc) {
   if (input === null) {
     input = actualTask.name;
   }
-
-  // console.log(actualTask.date, actualTask);
   const ul = section;
   const li = document.createElement("li");
   li.classList.add("task-item");
@@ -164,7 +306,7 @@ const renderList = function (toDo, section, actualTask, deleteFunc) {
   calculateProgress("general-tasks"), calculateProgress("shopItems");
   calculateProgress("today-tasks"), saveAppState();
 };
-/////////////////////////////////////
+
 // Listing the tasks bevor saving the date
 const renderTasks = () => {
   const input = dateTodo.value;
@@ -189,7 +331,6 @@ const renderAllSavedTasks = () => {
         .textContent.slice(0, -1)
         .split(" : ")[1];
       const deleteDate = e.target.closest("li").textContent.split(" : ")[0];
-      console.log(deleteDate);
       e.target.closest("li").remove();
 
       // find index of the value to be deleted
@@ -197,9 +338,7 @@ const renderAllSavedTasks = () => {
         (task) => task.name === deleteTaskText
       );
       tasks.forEach((task, i) =>
-        task.date === deleteDate.trim()
-          ? tasks.splice(i, 1)
-          : console.log(deleteDate)
+        task.date === deleteDate.trim() ? tasks.splice(i, 1) : ""
       );
 
       if (taskIndex !== -1) {
@@ -234,7 +373,6 @@ const saveDate = () => {
       name: aTasks.map((t) => t.name).join(" - "),
       date: selectedDate,
     });
-    console.log(savedTasks);
     document.getElementById("datePicker").value = ""; // clear Date setting
     messageDate.textContent = "Add Tasks / Notes For Later 📆";
     messageSaved.classList.add("hidden");
@@ -249,7 +387,6 @@ const saveDate = () => {
   } else {
     messageDate.classList.remove("hidden");
     messageDate.textContent = "Choose A future Date & Write your Tasks!";
-    // console.log("Bitte wählen Sie ein Datum aus.");
   }
   if (selectedDate === actDate) {
     savedList.innerHTML = "";
@@ -262,7 +399,6 @@ const compareDatesForToday = () => {
   tasks.forEach((task, taskIndex) => {
     if (task.date < actDate) {
       tasks.splice(tasks[taskIndex], 1);
-      // saveAppState();
     }
     if (task.date === actDate) {
       // const taskClass = tasks[taskIndex] - the tasks-array is: tasks[tasksIndex].text
@@ -274,14 +410,11 @@ const compareDatesForToday = () => {
             tasks[taskIndex].text,
             () => calculateProgress("today-tasks"),
             todayPreview,
-            "You finished!"
+            "No tasks left, you did 100% today!"
           );
-          // saveAppState();
         });
         todayPreview.innerHTML = task.text[0].name;
-
         calculateProgress("today-tasks");
-        // checkStatus("today-tasks");
         saveAppState();
       });
     } else {
@@ -296,159 +429,35 @@ const compareDatesForToday = () => {
 const addGeneralTodo = () => {
   const input = generalTodo.value;
   if (input) {
+    messageTodo.classList.add("hidden");
     generalTasks.push({ name: input, isChecked: false });
     renderList(generalTodo, generalTask, null, (e) => {
-      deleteTask(e, generalTasks, () => calculateProgress("general-tasks"));
+      deleteTask(e, generalTasks, () => {
+        calculateProgress("general-tasks");
+        renderMessage(messageTodo, generalTasks);
+      });
       renderMessage(messageTodo, generalTasks);
-      // saveAppState();
     });
-
-    messageTodo.classList.add("hidden");
     calculateProgress("general");
-    // checkStatus("general-tasks");
   }
 };
 
 const addShopItem = () => {
-  // const input = document.getElementById("shopping-input").value;
   const input = shopItem.value;
   if (input) {
     shopItems.push({ name: input, isChecked: false });
     messageShop.classList.add("hidden");
     renderList(shopItem, shopList, null, (e) => {
-      deleteTask(e, shopItems, () => calculateProgress("shopItems"));
-      renderMessage(messageShop, shopItems);
-      // saveAppState();
-    });
-  }
-};
-
-//////////////////////////////////////////////////////////////
-// Navigation
-const toggleSection = (button) => {
-  // Hide all sections
-  const sections = document.querySelectorAll("section");
-  sections.forEach((section) => (section.style.display = "none"));
-  // Render section that belongs to data-target of btn
-  const targetSectionId = button.dataset.target;
-  const sectionToShow = document.getElementById(targetSectionId);
-  sectionToShow.style.display = "block";
-  todayBody.classList.add("hidden");
-  main.classList.remove("hidden");
-};
-
-const calculateProgress = (section) => {
-  const tasksCalc = document.querySelectorAll(`
-    #${section} li input[type="checkbox"]`);
-  let todaysTasks;
-  // progress for general and today
-  if (section === "general-tasks" || section === "today-tasks") {
-    const sectionProgress = document.getElementById(
-      `${section === "general-tasks" ? "general-progress" : "today-progress"}`
-    );
-    const total = tasksCalc.length;
-    const completed = Array.from(tasksCalc).filter(
-      (task) => task.checked
-    ).length;
-    const percent = total ? Math.round((completed / total) * 100) : 0;
-    sectionProgress.innerText = `${percent}%`;
-    total === 0
-      ? (sectionProgress.style.opacity = 0.4)
-      : (sectionProgress.style.opacity = 1);
-
-    saveAppState();
-  }
-  // checked-status
-  tasksCalc.forEach((checkbox, index) => {
-    const checkedYes = checkbox.checked;
-    if (section === "general-tasks" && generalTasks[index]) {
-      generalTasks[index].isChecked = checkedYes;
-      // saveAppState();
-    }
-    if (section === "shopItems" && shopItems[index]) {
-      shopItems[index].isChecked = checkedYes;
-      // saveAppState();
-    }
-    if (section === "today-tasks") {
-      const taskText = checkbox.previousElementSibling.textContent;
-      todaysTasks = taskText;
-      // saveAppState();
-      tasks.forEach((taskSection) => {
-        if (taskSection.date === actDate)
-          taskSection.text.forEach((t) => {
-            if (t.name === todaysTasks) t.isChecked = checkedYes;
-            // saveAppState();
-          });
+      deleteTask(e, shopItems, () => {
+        calculateProgress("shopItems");
+        renderMessage(messageShop, shopItems);
       });
-    }
-    saveAppState();
-  });
-};
-
-const liToggle = (li, btn) => {
-  li.addEventListener("click", (e) => {
-    const check = li.querySelector('input[type="checkbox"]');
-    if (
-      e.target.tagName.toLowerCase() === "input" ||
-      e.target.classList.contains("delete-button")
-    ) {
-      // Falls ja, verlasse die Funktion ohne zu togglen
-      return;
-    }
-
-    if (btn.style.display === "none") {
-      btn.style.display = "block";
-      check.style.display = "none";
-    } else {
-      btn.style.display = "none";
-      check.style.display = "block";
-    }
-  });
-};
-
-const deleteTask = (
-  e,
-  list,
-  calculateProgressFunction,
-  previewElement = null,
-  emptyMessage = "No tasks left!"
-) => {
-  e.stopPropagation();
-  const li = e.target.closest("li");
-  // find value to be deleted
-  const deleteTaskText = li.textContent.slice(0, -1);
-  li.remove();
-
-  // find index of the value to be deleted
-  const taskIndex = list.findIndex((task) => task.name === deleteTaskText);
-
-  // delete task from array/list
-  if (taskIndex !== -1) {
-    list.splice(taskIndex, 1);
-  }
-
-  // render previewMessage of today-div
-  if (list.length === 0 && previewElement) {
-    previewElement.textContent = emptyMessage;
-    todayBody.style.display = "none";
-    main.classList.remove("hidden");
-    tasks.forEach((todaysTasks, i) => {
-      if (todaysTasks.date === actDate) tasks.splice(i, 1);
+      renderMessage(messageShop, shopItems);
     });
-  } else if (previewElement) {
-    previewElement.textContent = list[0].name;
   }
-  if (calculateProgressFunction) {
-    calculateProgressFunction();
-  }
-  saveAppState();
 };
 
-const renderMessage = (messageBox, array) => {
-  array.length === 0
-    ? messageBox.classList.remove("hidden")
-    : messageBox.classList.add("hidden");
-};
+//////////////////////////////////////////////////////////////Functions for Tasks Sections end ///////
 
 // Save all relevant data to localStorage
 const saveAppState = () => {
@@ -473,13 +482,17 @@ const loadAppState = () => {
   // general Tasks
   generalTasks.forEach((task) => {
     renderList(null, generalTask, task, (e) => {
-      deleteTask(e, generalTasks, () => calculateProgress("general-tasks"));
+      deleteTask(e, generalTasks, () => {
+        calculateProgress("general-tasks");
+        renderMessage(messageTodo, generalTasks);
+      });
     });
   });
   // shopitems
   shopItems.forEach((item) => {
     renderList(null, shopList, item, (e) => {
       deleteTask(e, shopItems);
+      renderMessage(messageShop, shopItems);
     });
   });
   renderMessage(messageTodo, generalTasks);

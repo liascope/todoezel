@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="appName">ToDoeZel✏️</div>
     <div id="today">
       <div class="today-header" onclick="toggleTodayDiv()">
         <span id="today-date">TODAY | Sun 10 Nov 24</span>
@@ -57,7 +58,10 @@
           SHOW SAVED TASKS 🔍
         </button>
         <div class="calPart">
-          <h4>Search Date <input type="date" id="datePicker" /></h4>
+          <h4>
+            Search Date
+            <input type="date" id="datePicker" />
+          </h4>
           <button class="today_btn" onclick="saveDate()">Save 💾</button>
         </div>
         <div class="general-header">
@@ -79,6 +83,9 @@
         <div class="messageSaved">No tasks saved yet.</div>
       </section>
     </div>
+    <p class="copyRight">
+      ToDoeZel App | Copyright (c) 2024 Zeliha Akin / liaakin
+    </p>
     <footer>
       <button class="nav" data-target="section1" onclick="toggleSection(this)">
         TO DO 📋
@@ -90,6 +97,7 @@
         DO LATER📆
       </button>
     </footer>
+
     <script src="script.js"></script>
   </body>
 </html>

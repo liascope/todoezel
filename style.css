@@ -7,11 +7,36 @@
 html,
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f4f4;
+  /* background-color: #f4f4f4; */
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
-  color: #3e4750;
+  color: #202933;
+  background-image: url("background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.appName {
+  font-size: 1.3rem;
+  text-align: center;
+  letter-spacing: 11px;
+  padding: 5px 0;
+  opacity: 0.6;
+  color: transparent;
+  background: #666666;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  text-shadow: 0px 3px 3px rgba(255, 255, 255, 0.5);
+}
+.copyRight {
+  position: absolute;
+  font-size: 0.8rem;
+  bottom: 5rem;
+  margin: 0 1rem;
+  letter-spacing: 0.3px;
+  color: rgb(32, 41, 51, 0.5);
 }
 h4 {
   opacity: 0.8;
@@ -23,13 +48,17 @@ h4 {
   padding-bottom: 10px;
   margin: 10px;
 }
-/* Heute Section Styling */
+
 #today {
-  background-color: #fff;
+  /* background-color: #fff; */
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  /* background-color: rgba(255, 255, 255, 0.5); */
+  /* background-color: rgba(255, 255, 255, 0.2); */
+  background-color: rgba(169, 169, 169, 0.3);
   border-radius: 8px;
   margin: 10px;
   padding: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .today-header {
@@ -50,11 +79,12 @@ h4 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 55vw;
+  width: 56vw;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  right: 3rem;
+  right: 5rem;
+  font-size: larger;
 }
 
 #today-tasks {
@@ -65,9 +95,8 @@ h4 {
 
 /* Delete-Button Style */
 .delete-button {
-  color: red;
+  color: rgb(255, 51, 51);
   cursor: pointer;
-  font-size: 20px;
 }
 .messageTodo,
 .messageShop,
@@ -81,7 +110,7 @@ h4 {
   /* rotate: -5deg; */
   letter-spacing: 2px;
   font-size: 1.2rem;
-  color: #5e7a98;
+  color: rgb(44, 57, 71, 0.8);
 }
 
 .today-body {
@@ -93,6 +122,7 @@ h4 {
   font-size: 0.8rem;
   height: 3rem;
   top: 1px;
+  font-weight: bold;
 }
 
 ul {
@@ -101,20 +131,30 @@ ul {
 }
 
 li {
-  background-color: #e9e9e9;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* background-color: #e9e9e9; */
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 4px;
   display: flex;
   justify-content: space-between;
+  color: white;
+  letter-spacing: 0.5px;
+  font-weight: bold;
 }
-
+ul li:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.3);
+}
 section {
-  background-color: #fff;
+  /* background-color: #fff; */
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  /* background-color: rgba(255, 255, 255, 0.5); */
+  /* background-color: rgba(255, 255, 255, 0.2);  */
+  background-color: rgba(169, 169, 169, 0.3);
   margin: 10px;
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
   display: flex;
   justify-content: space-between;
   align-items: left;
@@ -166,7 +206,6 @@ input[type="date"] {
   -webkit-appearance: none;
   border: 1px solid #ccc;
   border-radius: 5px;
-  color: white;
 }
 
 .savedTasks {
@@ -195,6 +234,7 @@ input[type="date"] {
   justify-content: right;
   width: 3rem;
   height: 3rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 button {
