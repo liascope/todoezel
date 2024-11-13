@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDoeZel</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="today">
+      <div class="today-header" onclick="toggleTodayDiv()">
+        <span id="today-date">TODAY | Sun 10 Nov 24</span>
+        <span id="today-preview">Nothing saved for today 🤍</span>
+        <span id="today-progress" style="opacity: 0.4">100%</span>
+      </div>
+      <div id="today-body" class="hidden">
+        <ul id="today-tasks">
+          <!-- To-Does for today-->
+        </ul>
+      </div>
+    </div>
+    <div class="mainContainer">
+      <!-- General To-Does Section -->
+      <section id="section1" style="display: block">
+        <div class="general-header">
+          <input
+            type="text"
+            id="general-input"
+            placeholder="Add Tasks, Notes.."
+          />
+          <button class="general_btn" onclick="addGeneralTodo()">Add ✚</button>
+          <span id="general-progress" style="opacity: 0.4">100%</span>
+        </div>
+        <ul id="general-tasks"></ul>
+        <div class="messageTodo">No Tasks / Notes Yet 📋</div>
+      </section>
+
+      <section id="section2" class="hidden" style="display: none">
+        <!-- Shopping List -->
+        <div class="general-header">
+          <input
+            type="text"
+            id="shopping-input"
+            placeholder="Add Shopping Items.."
+          />
+          <button onclick="addShopItem()">Add ✚</button>
+        </div>
+        <ul id="shopItems"></ul>
+        <div class="messageShop">No Shop Items Yet 🛒</div>
+      </section>
+      <section id="section3" class="hidden" style="display: none">
+        <button
+          class="savedTasks"
+          data-target="section4"
+          onclick="toggleSection(this)"
+        >
+          SHOW SAVED TASKS 🔍
+        </button>
+        <div class="calPart">
+          <h4>Search Date <input type="date" id="datePicker" /></h4>
+          <button class="today_btn" onclick="saveDate()">Save 💾</button>
+        </div>
+        <div class="general-header">
+          <input
+            type="text"
+            id="dateTodo-input"
+            placeholder="Add Tasks / Notes For Later.."
+          />
+          <button onclick="renderTasks()">Add ✚</button>
+        </div>
+        <ul id="date-tasks">
+          <!-- Date To-Does -->
+        </ul>
+        <div class="messageDate">Add Tasks / Notes For Later 📆</div>
+      </section>
+      <section id="section4" class="hidden" style="display: none">
+        <h4>Your Saved Tasks and Notes 🗂️</h4>
+        <ul id="saved-tasks"></ul>
+        <div class="messageSaved">No tasks saved yet.</div>
+      </section>
+    </div>
+    <footer>
+      <button class="nav" data-target="section1" onclick="toggleSection(this)">
+        TO DO 📋
+      </button>
+      <button class="nav" data-target="section2" onclick="toggleSection(this)">
+        SHOP 🛒
+      </button>
+      <button class="nav" data-target="section3" onclick="toggleSection(this)">
+        DO LATER📆
+      </button>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
