@@ -370,7 +370,10 @@ const renderAllSavedTasks = () => {
   savedTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
   // delete last past 4th task
   const pastDates = savedTasks.filter((t) => t.date < actDate);
-  pastDates.length > 3 ? savedTasks.splice(0, 1) : "";
+  if (pastDates.length > 3) {
+    savedTasks.splice(0, 1);
+    saveAppState();
+  }
   savedTasks.forEach((t) => {
     renderList(null, savedList, t, (e) => {
       const deleteTaskText = e.target
