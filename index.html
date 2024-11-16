@@ -24,12 +24,13 @@
       <!-- General To-Does Section -->
       <section id="section1" style="display: block">
         <div class="general-header">
+          <button class="general_btn" onclick="addGeneralTodo()">Add ✚</button>
           <input
             type="text"
             id="general-input"
             placeholder="Add Tasks, Notes.."
           />
-          <button class="general_btn" onclick="addGeneralTodo()">Add ✚</button>
+
           <span id="general-progress" style="opacity: 0.4">100%</span>
         </div>
         <ul id="general-tasks"></ul>
@@ -39,12 +40,12 @@
       <section id="section2" class="hidden" style="display: none">
         <!-- Shopping List -->
         <div class="general-header">
+          <button onclick="addShopItem()">Add ✚</button>
           <input
             type="text"
             id="shopping-input"
             placeholder="Add Shopping Items.."
           />
-          <button onclick="addShopItem()">Add ✚</button>
         </div>
         <ul id="shopItems"></ul>
         <div class="messageShop">No Shop Items Yet 🛒</div>
@@ -65,12 +66,12 @@
           <button class="today_btn" onclick="saveDate()">Save 💾</button>
         </div>
         <div class="general-header">
+          <button onclick="renderTasks()">Add ✚</button>
           <input
             type="text"
             id="dateTodo-input"
             placeholder="Add Tasks / Notes For Later.."
           />
-          <button onclick="renderTasks()">Add ✚</button>
         </div>
         <ul id="date-tasks">
           <!-- Date To-Does -->
@@ -82,6 +83,18 @@
         <ul id="saved-tasks"></ul>
         <div class="messageSaved">No tasks saved yet.</div>
       </section>
+    </div>
+    <div class="confirm hidden">
+      <div class="confirmMsg">
+        <p>
+          You have more than 5 checked tasks or notes. Do you want to delete
+          them?
+        </p>
+        <div class="confirmAnsw">
+          <div class="yesBtn">✔</div>
+          <div class="noBtn">✗</div>
+        </div>
+      </div>
     </div>
     <footer>
       <button class="nav" data-target="section1" onclick="toggleSection(this)">

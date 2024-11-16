@@ -63,6 +63,7 @@ const toggleTodayDiv = () => {
       : main.classList.remove("hidden");
   }
 };
+
 // Navigation
 const toggleSection = (button) => {
   // Hide all sections
@@ -141,6 +142,7 @@ const calculateProgress = (section) => {
           });
       });
     }
+
     saveAppState();
   });
 };
@@ -208,6 +210,51 @@ const renderMessage = (messageBox, array) => {
     ? messageBox.classList.remove("hidden")
     : messageBox.classList.add("hidden");
 };
+
+// ask to delete checked tasks
+const deleteCheckedTasks = (tsk) => {
+  const checkedOnes = tsk.filter((t) => t.isChecked).length;
+  if (checkedOnes > 4) {
+    document.querySelector(
+      ".confirmMsg p"
+    ).textContent = `You have more than ${checkedOnes} checked tasks, notes or shop items. Do you want to delete them?`;
+    document.querySelector(".confirm").classList.remove("hidden");
+
+    const yesBtn = document.querySelector(".yesBtn");
+    const noBtn = document.querySelector(".noBtn");
+
+    const handleYesClick = () => {
+      for (let i = tsk.length - 1; i >= 0; i--) {
+        if (tsk[i].isChecked) {
+          tsk.splice(i, 1);
+          document.querySelector(".confirm").classList.add("hidden");
+          saveAppState();
+          location.reload(); // true
+        }
+      }
+    };
+
+    const handleNoClick = () => {
+      document.querySelector(".confirm").classList.add("hidden");
+    };
+
+    yesBtn.addEventListener("click", handleYesClick);
+    noBtn.addEventListener("click", handleNoClick);
+  }
+};
+
+const reloadAfterNine = () => {
+  const now = new Date();
+  if (now.getHours() >= 9) {
+    deleteCheckedTasks(generalTasks);
+    deleteCheckedTasks(shopItems);
+  } else {
+    return;
+  }
+};
+
+reloadAfterNine();
+
 ///////////////////////////////////////////////// General App Funktions End //////////////////////
 
 ////////////////////////////////Funktions for Tasks Sections //////////////////
@@ -401,6 +448,8 @@ const compareDatesForToday = () => {
       tasks.splice(tasks[taskIndex], 1);
     }
     if (task.date === actDate) {
+      todayPreview.style.backgroundColor = "rgb(224, 255, 189, 0.5)";
+
       // const taskClass = tasks[taskIndex] - the tasks-array is: tasks[tasksIndex].text
       // Render List for each task
       task.text.forEach((taskText) => {
