@@ -391,6 +391,7 @@ footer button:hover {
   padding: 2rem 2.1rem;
   opacity: 0.7;
   text-align: justify;
+  border-radius: 5px;
 }
 .infoText p {
   margin-top: 6rem;
