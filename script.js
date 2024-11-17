@@ -69,25 +69,6 @@ todayDate.innerHTML = formatDate();
 
 const datePicker = document.querySelector("#datePicker");
 
-// Setze den Platzhalter, wenn das Eingabefeld leer ist
-datePicker.addEventListener("focus", () => {
-  if (!datePicker.value) {
-    datePicker.placeholder = "dd.mm.yyyy"; // Ersetze durch dein gewünschtes Format
-  }
-});
-
-// Wenn der Benutzer ein Datum auswählt, wird der Platzhalter entfernt
-datePicker.addEventListener("change", () => {
-  datePicker.placeholder = ""; // Entfernt den Platzhalter
-});
-
-// Falls der Benutzer das Feld zurücksetzt, wird der Platzhalter wieder angezeigt
-datePicker.addEventListener("blur", () => {
-  if (!datePicker.value) {
-    datePicker.placeholder = "dd.mm.yyyy"; // Wieder Platzhalter anzeigen, falls leer
-  }
-});
-
 // Toggle Today Section
 const toggleTodayDiv = () => {
   const hasTodayTask = tasks.some((task) => task.date === actDate);
