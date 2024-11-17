@@ -26,7 +26,21 @@ let generalTasks = [];
 let shopItems = [];
 let savedTasks = [];
 let tasks = [];
-/////////////////////////////////////////// General Funktions //////////////
+/////////////////////////////////////////// General Funktions ////////////
+//////////////// Info Box
+document.querySelector(".appName").addEventListener("click", () => {
+  const info = document.querySelector(".infoText");
+  document.querySelector(".info").classList.remove("hidden");
+  setTimeout(() => {
+    info.scrollTop = 0;
+  }, 50);
+});
+document.querySelector(".info").addEventListener("click", (e) => {
+  const btn = e.target.closest(".close");
+  if (!btn) return;
+  document.querySelector(".info").classList.add("hidden");
+});
+/////////// Info Box End //////
 // Display Date for Today Above
 const formatDate = () => {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
@@ -217,7 +231,9 @@ const deleteCheckedTasks = (tsk) => {
   if (checkedOnes > 4) {
     document.querySelector(
       ".confirmMsg p"
-    ).textContent = `You have more than ${checkedOnes} checked tasks, notes or shop items. Do you want to delete them?`;
+    ).textContent = `You have more than ${checkedOnes} checked ${
+      tsk === generalTasks ? "tasks or notes" : "shop items"
+    }. Do you want to delete them?`;
     document.querySelector(".confirm").classList.remove("hidden");
 
     const yesBtn = document.querySelector(".yesBtn");
@@ -238,22 +254,13 @@ const deleteCheckedTasks = (tsk) => {
       document.querySelector(".confirm").classList.add("hidden");
     };
 
+    yesBtn.removeEventListener("click", handleYesClick);
+    noBtn.removeEventListener("click", handleNoClick);
+
     yesBtn.addEventListener("click", handleYesClick);
     noBtn.addEventListener("click", handleNoClick);
   }
 };
-
-const reloadAfterNine = () => {
-  const now = new Date();
-  if (now.getHours() >= 9) {
-    deleteCheckedTasks(generalTasks);
-    deleteCheckedTasks(shopItems);
-  } else {
-    return;
-  }
-};
-
-reloadAfterNine();
 
 ///////////////////////////////////////////////// General App Funktions End //////////////////////
 
@@ -551,6 +558,9 @@ const loadAppState = () => {
   renderMessage(messageShop, shopItems);
   renderMessage(messageDate, dateTasks);
   renderMessage(messageSaved, savedTasks);
+
+  deleteCheckedTasks(generalTasks);
+  deleteCheckedTasks(shopItems);
 };
 
 loadAppState();

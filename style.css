@@ -18,6 +18,7 @@ body {
   background-repeat: no-repeat;
 }
 .appName {
+  position: relative;
   font-size: 1.3rem;
   text-align: center;
   letter-spacing: 11px;
@@ -29,6 +30,19 @@ body {
   -moz-background-clip: text;
   background-clip: text;
   text-shadow: 0px 3px 3px rgba(255, 255, 255, 0.5);
+}
+.appName p {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  font-size: 1.4rem;
+  color: #202933;
+  text-shadow: 0px 3px 3px rgba(255, 255, 255, 0.5);
+  opacity: 0.8;
+  padding: 2px;
+}
+.appName:hover {
+  cursor: pointer;
 }
 
 h4 {
@@ -66,7 +80,7 @@ h4 {
 #today-progress {
   position: absolute;
   left: 3px;
-  top: 1.7rem;
+  top: 1.2rem;
 }
 #today-preview {
   position: absolute;
@@ -91,6 +105,7 @@ h4 {
 .delete-button {
   color: rgb(255, 51, 51);
   cursor: pointer;
+  font-size: 1.2rem;
 }
 .messageTodo,
 .messageShop,
@@ -143,7 +158,6 @@ section {
   /* background-color: #fff; */
   /* background-color: rgba(0, 0, 0, 0.5); */
   /* background-color: rgba(255, 255, 255, 0.5); */
-  /* background-color: rgba(255, 255, 255, 0.2);  */
   background-color: rgba(169, 169, 169, 0.3);
   margin: 10px;
   padding: 10px;
@@ -231,10 +245,14 @@ input[type="date"] {
   border: 3px solid #81c792;
   display: flex;
   align-items: center;
-  justify-content: right;
-  width: 3rem;
-  height: 3rem;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  font-size: larger;
+  font-weight: 600;
+
+  text-shadow: 0 2px 5px #000000b3;
 }
 .copyRight {
   position: fixed;
@@ -297,7 +315,8 @@ footer button:hover {
   margin-top: 20px;
 }
 
-.confirm {
+.confirm,
+.info {
   position: fixed;
   z-index: 2;
   top: 0;
@@ -355,6 +374,52 @@ footer button:hover {
   background-color: #5e7a98;
 }
 
+.infoText {
+  position: relative;
+  width: 80vw;
+  height: 90vh;
+  background-image: url("background.png");
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  padding: 2rem 2.1rem;
+  opacity: 0.7;
+  text-align: justify;
+}
+.infoText p {
+  margin-top: 6rem;
+}
+.fixedHeader {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  right: 0;
+  left: 0;
+  margin-top: -1rem;
+  margin: -2.2rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  align-items: center;
+}
+
+.infoText h3 {
+  margin: 2rem 0;
+}
+.close {
+  color: red;
+  margin-top: -0.5rem;
+  font-size: 1.7rem;
+  border: 1px solid red;
+  border-radius: 100%;
+  padding: 3px 10px;
+  opacity: 0.5;
+}
+.close:hover {
+  opacity: 0.9;
+}
 .hidden {
   display: none;
 }
