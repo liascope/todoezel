@@ -231,9 +231,7 @@ const deleteCheckedTasks = (tsk) => {
   if (checkedOnes > 4) {
     document.querySelector(
       ".confirmMsg p"
-    ).textContent = `You have more than ${checkedOnes} checked ${
-      tsk === generalTasks ? "tasks or notes" : "shop items"
-    }. Do you want to delete them?`;
+    ).textContent = `You have more than ${checkedOnes} checked tasks, notes or shop items. Do you want to delete them?`;
     document.querySelector(".confirm").classList.remove("hidden");
 
     const yesBtn = document.querySelector(".yesBtn");
