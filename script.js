@@ -275,11 +275,21 @@ class Task {
 
 // create Task Class for Todays Tasks
 const addTask = (text, date) => {
-  const newTask = new Task(text, date);
-  tasks.push(newTask);
+  const existingTask = tasks.find((task) => task.date === date);
+
+  if (existingTask) {
+    // Append new tasks to the existing tasks array for that date
+    existingTask.text.push(...text);
+  } else {
+    // Create a new Task if none exists for the selected date
+    const newTask = new Task([...text], date); // Text as an array
+    tasks.push(newTask);
+  }
+
+  // Clear and re-render the task lists
   savedList.innerHTML = "";
   taskList.innerHTML = "";
-  saveAppState();
+  saveAppState(); // Save the updated state
 };
 
 //
@@ -367,7 +377,7 @@ const renderTasks = () => {
   if (input) {
     renderList(dateTodo, taskList, null, (e) => {
       e.target.closest("li").remove();
-      renderMessage(messageDate, dateTasks);
+      if (taskList.children.length === 0) renderMessage(messageDate, dateTasks);
     });
     messageDate.classList.add("hidden");
   }
