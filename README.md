@@ -59,4 +59,4 @@ Todoezel is a user-friendly task management application designed to help users s
 
  📜 License & Contributions
 
-* ©2025 Zeliha A. (liascope. All rights reserved. Open for personal use; redistribution or modification requires explicit permission.
+* ©2025 Zeliha A. (liascope). All rights reserved. Open for personal use; redistribution or modification requires explicit permission.
